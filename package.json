@@ -1,11 +1,27 @@
 {
-  "name": "index.js",
+  "name": "invent-analytics",
   "version": "1.0.0",
-  "description": "",
+  "description": "��#\u0000 \u0000i\u0000n\u0000v\u0000e\u0000n\u0000t\u0000-\u0000a\u0000n\u0000a\u0000l\u0000y\u0000t\u0000i\u0000c\u0000s\u0000\r\u0000 \u0000",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeylaY1996/invent-analytics.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeylaY1996/invent-analytics/issues"
+  },
+  "homepage": "https://github.com/LeylaY1996/invent-analytics#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "helmet": "^6.0.0",
+    "mongoose": "^6.6.4",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20"
+  }
 }
