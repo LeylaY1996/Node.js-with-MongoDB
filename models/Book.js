@@ -8,8 +8,9 @@ const BookSchema = new mongoose.Schema({
         max:20,
         unique:true
     },
-    userId: {
-        type: String
+    score:{
+        type:Number,
+        default:0,
     },
 },
 {timestamps:true}

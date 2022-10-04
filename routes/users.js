@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/User");
+const Book = require("../models/Book");
 
 //CREATE A USER
 router.post("/", async (req, res) => {
@@ -22,6 +23,7 @@ router.get("/:id", async (req, res) => {
     }
   });
 
+//GET ALL USERS
 router.get('/', function(req, res) {
     try {
         User.find({}, function(err, users) {
@@ -36,5 +38,49 @@ router.get('/', function(req, res) {
         console.log(error)        
     }
   });
+
+//BORROW BOOK
+router.put("/:id/borrow/:bookId", async (req, res) => {
+    const user = await User.findById(req.params.id);
+    const book = await Book.findById(req.params.bookId);
+    if (user && book) {
+        try {
+            if (!user.borrowBooks.includes(req.params.bookId)) {
+                await user.updateOne({ $push: { borrowBooks: req.params.bookId } });
+                res.status(200).json(user);
+            } else {
+                res.status(403).json("You already borrow this book");
+            }
+        } catch (err) {
+            res.status(500).json(err)
+        }
+    } else {
+        res.status(403).json("You can't borrow this book");
+    }
+});
+
+//RETURN BOOK
+router.put("/:id/return/:bookId", async (req, res) => {
+    const user = await User.findById(req.params.id);
+    const book = await Book.findById(req.params.bookId);
+    if (user && book) {
+        try {
+            if (user.borrowBooks.includes(req.params.bookId)) {
+                await user.updateOne({ $pull: { borrowBooks: req.params.bookId } });
+                await user.updateOne({ $push: { returnBooks: req.params.bookId } });
+                await book.updateOne({ $push: { score: req.body.score } });
+                res.status(200).json(user);
+            } else {
+                res.status(403).json("You already return this book");
+            }
+        } catch (err) {
+            res.status(500).json(err)
+        }
+    } else {
+        res.status(403).json("You can't return this book");
+    }
+
+});
+
 
 module.exports = router
