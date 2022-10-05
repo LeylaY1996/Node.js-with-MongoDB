@@ -40,14 +40,17 @@ router.get('/', function(req, res) {
   });
 
 //BORROW BOOK
-router.put("/:id/borrow/:bookId", async (req, res) => {
+router.post("/:id/borrow/:bookId", async (req, res) => {
     const user = await User.findById(req.params.id);
     const book = await Book.findById(req.params.bookId);
     if (user && book) {
         try {
             if (!user.borrowBooks.includes(req.params.bookId)) {
-                await user.updateOne({ $push: { borrowBooks: req.params.bookId } });
-                res.status(200).json(user);
+                user.updateOne({ 
+                  $push: { borrowBooks: req.params.bookId },
+                  $pull: { returnBooks: req.params.bookId } 
+                });
+                res.status(200).json("Successfull!");
             } else {
                 res.status(403).json("You already borrow this book");
             }
@@ -60,16 +63,16 @@ router.put("/:id/borrow/:bookId", async (req, res) => {
 });
 
 //RETURN BOOK
-router.put("/:id/return/:bookId", async (req, res) => {
+router.post("/:id/return/:bookId", async (req, res) => {
     const user = await User.findById(req.params.id);
     const book = await Book.findById(req.params.bookId);
     if (user && book) {
         try {
-            if (user.borrowBooks.includes(req.params.bookId)) {
+            if (!user.returnBooks.includes(req.params.bookId)) {
                 await user.updateOne({ $pull: { borrowBooks: req.params.bookId } });
                 await user.updateOne({ $push: { returnBooks: req.params.bookId } });
                 await book.updateOne({ $push: { score: req.body.score } });
-                res.status(200).json(user);
+                res.status(200).json("Successfull!");
             } else {
                 res.status(403).json("You already return this book");
             }
